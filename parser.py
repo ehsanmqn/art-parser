@@ -3,32 +3,23 @@ import json
 from html2json import collect
 
 GBP_CONVERT_RATE = 1.34
+DIRECTORY_2015 = "data/2015-03-18/"
+DIRECTORY_2017 = "data/2017-12-20/"
 
+##
+# Regular expression
+# The regular expression for extracting data from category 2015
+#
 regex2015 = {
     "artist": ["h2", "", ""],
     "work": ["h3", "", ""],
     "price": ["div", "", ["/[GU][BS][PD].*/"]]
 }
 
-
-regex2017 = {
-    "h3": ["h3", "", ""],
-    "currency": ["span", "", ["/[GU][BS][PD].*/"]],
-    "amount": ["span", "", ["/[0-9].*/"]]
-}
-
-
-def to_json_2017(x):
-    return {
-        "artist": x["h3"].split("|")[0],
-        "works": [{
-            "title": x["h3"].split("|")[1],
-            "currency": x["currency"].split("|")[0],
-            "totalLifetimeValue": x["amount"].replace(",", "")
-        }]
-    }
-
-
+##
+# Function: to_json_2017(x)
+# This function jsonify an input data for category 2015
+#
 def to_json_2015(x):
     return {
         "artist": x["artist"],
@@ -39,7 +30,34 @@ def to_json_2015(x):
         }]
     }
 
+##
+# Regular expression
+# The regular expression for extracting data from category 2017
+#
+regex2017 = {
+    "h3": ["h3", "", ""],
+    "currency": ["span", "", ["/[GU][BS][PD].*/"]],
+    "amount": ["span", "", ["/[0-9].*/"]]
+}
 
+##
+# Function: to_json_2017(x)
+# This function jsonify an input data for category 2017
+#
+def to_json_2017(x):
+    return {
+        "artist": x["h3"].split("|")[0],
+        "works": [{
+            "title": x["h3"].split("|")[1],
+            "currency": x["currency"].split("|")[0],
+            "totalLifetimeValue": x["amount"].replace(",", "")
+        }]
+    }
+
+##
+# Function: add_to_dict_without_duplication(dict, json_data)
+# This function insert a json data into a dict with respect to redundancy
+#
 def add_to_dict_without_duplication(dict, json_data):
     for key, value in dict.items():
         if key == json_data["artist"]:
@@ -52,7 +70,10 @@ def add_to_dict_without_duplication(dict, json_data):
 
     return dict
 
-
+##
+# Function: change_to_dollar(json)
+# This function change GBP currency to dollar in a provided json object
+#
 def change_to_dollar(json):
     if json["works"][0]["currency"] == "GBP":
         json["works"][0]["totalLifetimeValue"] = str(float(json["works"][0]["totalLifetimeValue"]) * GBP_CONVERT_RATE)
@@ -64,8 +85,14 @@ def change_to_dollar(json):
 
     return json
 
+
+##
+# Function: parse_html_data_2015(data=None):
+# This function parse category 2015 data
+#
 def parse_html_data_2015(data=None):
-    working_directory = "data/2015-03-18/"
+    working_directory = DIRECTORY_2015
+
     entries = os.listdir(working_directory)
 
     if data == None:
@@ -74,17 +101,25 @@ def parse_html_data_2015(data=None):
     for entry in entries:
         html_content = open(working_directory + entry, "r")
 
+        # Convert data from HTML to json
         parsed = collect(html_content.read(), regex2015)
         parsed_json = to_json_2015(parsed)
+
+        # Change currency
         parsed_json = change_to_dollar(parsed_json)
 
+        # Add data to dictionary regarding to data duplication
         add_to_dict_without_duplication(data, parsed_json)
 
     return data
 
-
+##
+# Function: parse_html_data_2017(data=None):
+# This function parse category 2017 data
+#
 def parse_html_data_2017(data=None):
-    working_directory = "data/2017-12-20/"
+    working_directory = DIRECTORY_2017
+
     entries = os.listdir(working_directory)
 
     if data == None:
@@ -93,10 +128,14 @@ def parse_html_data_2017(data=None):
     for entry in entries:
         html_content = open(working_directory + entry, "r")
 
+        # Convert data from HTML to json
         parsed = collect(html_content.read(), regex2017)
         parsed_json = to_json_2017(parsed)
+
+        # Change currency
         parsed_json = change_to_dollar(parsed_json)
 
+        # Add data to dictionary regarding to data duplication
         add_to_dict_without_duplication(data, parsed_json)
 
     return data
