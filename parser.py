@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from html2json import collect
 
 GBP_EXCHANGE_RATE = 1.34
@@ -22,7 +23,7 @@ regex2015 = {
 #
 def to_json_2015(x):
     return {
-        "artist": x["artist"],
+        "artist": re.sub(" \([1-9]{4}-[1-9]{4}\)", "", x["artist"]),
         "works": [{
             "title": x["work"].split("|")[0],
             "currency": x["price"].split(" ")[0],
@@ -46,7 +47,7 @@ regex2017 = {
 #
 def to_json_2017(x):
     return {
-        "artist": x["h3"].split("|")[0],
+        "artist": re.sub(" \([1-9]{4}-[1-9]{4}\)", "", x["h3"].split("|")[0]),
         "works": [{
             "title": x["h3"].split("|")[1],
             "currency": x["currency"].split("|")[0],
@@ -61,7 +62,7 @@ def to_json_2017(x):
 def add_to_dict_without_duplication(dict, json_data):
     for key, value in dict.items():
         if key == json_data["artist"]:
-            dict[key]["works"].append(json_data["works"])
+            dict[key]["works"].append(json_data["works"][0])
             dict[key]["totalValue"] = str(float(dict[key]["totalValue"]) + float(json_data["works"][0]["totalLifetimeValue"]))
 
             return dict
