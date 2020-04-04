@@ -22,4 +22,4 @@ def parse_html_data_2015():
 
 if __name__ == '__main__':
     parsed_data = parse_html_data_2015()
-    # print(list(dict.fromkeys(parsed_data)))
+    print(list(dict.fromkeys(parsed_data)))
