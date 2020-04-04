@@ -2,7 +2,7 @@ import os
 import json
 from html2json import collect
 
-GBP_CONVERT_RATE = 1.34
+GBP_EXCHANGE_RATE = 1.34
 DIRECTORY_2015 = "data/2015-03-18/"
 DIRECTORY_2017 = "data/2017-12-20/"
 
@@ -76,7 +76,7 @@ def add_to_dict_without_duplication(dict, json_data):
 #
 def change_to_dollar(json):
     if json["works"][0]["currency"] == "GBP":
-        json["works"][0]["totalLifetimeValue"] = str(float(json["works"][0]["totalLifetimeValue"]) * GBP_CONVERT_RATE)
+        json["works"][0]["totalLifetimeValue"] = str(float(json["works"][0]["totalLifetimeValue"]) * GBP_EXCHANGE_RATE)
         json["works"][0]["currency"] = "USD"
         json["totalValue"] = json["works"][0]["totalLifetimeValue"]
 
