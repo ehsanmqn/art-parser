@@ -4,12 +4,16 @@ from html2json import collect
 regex = {
     "artist": ["h2", "", ""],
     "work": ["h3", "", ""],
+    "price": ["div", "", ["/[GU][BS][PD].*/"]]
 }
 
 def to_json(x):
     return {
         "artist": x["artist"],
-        "works": x["work"].split("|")[0],
+        "works": {
+            "title": x["work"].split("|")[0],
+            "price": x["price"]
+        }
     }
 
 def parse_html_data_2015():
@@ -32,5 +36,5 @@ if __name__ == '__main__':
     # Step 1
     # print(list(dict.fromkeys(parsed_data)))
 
-    # Step 2
+    # Step 2 to 3
     print(list(map(lambda x: to_json(x), parsed_data)))
