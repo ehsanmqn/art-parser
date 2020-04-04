@@ -18,7 +18,7 @@ git clone https://github.com/ehsanmqn/ArtParser
 
 #### Prepare and run
 ```bash
-cd MorseProject
+cd ArtParser
 virtualenv -p python3 venv
 source venv/bin/activate
 python parser.py
