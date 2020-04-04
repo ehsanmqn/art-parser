@@ -12,7 +12,8 @@ def to_json(x):
         "artist": x["artist"],
         "works": {
             "title": x["work"].split("|")[0],
-            "price": x["price"]
+            "currency": x["price"].split(" ")[0],
+            "amount": x["price"].split(" ")[1]
         }
     }
 
