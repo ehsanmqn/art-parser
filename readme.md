@@ -1,4 +1,5 @@
-The HTML Parser project for Saman PR
+# HTML parser
+This is a very simple HTML parser project using python
 
 ## Table of contents
 
